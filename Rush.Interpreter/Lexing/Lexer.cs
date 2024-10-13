@@ -122,9 +122,6 @@ internal sealed class Lexer
                 case ']':
                     tokens.Add(Seperator.BoxCloseBracket.Clone());
                     break;
-                case '\'':
-                    tokens.Add(ReadString());
-                    break;
                case '1':
                case '2':
                case '3':
@@ -145,37 +142,6 @@ internal sealed class Lexer
         }
 
         return tokens;
-    }
-    
-    private Token ReadString()
-    {
-        index++;
-        StringBuilder s = new StringBuilder();
-
-        while(index < source.Length)
-        {
-            var current = source[index];
-
-            switch(current)
-            {
-                case '\\':
-                    s.Append('\\');
-
-                    var next = LookAhead;
-                    s.Append(next == null ? string.Empty : next.ToString());
-                    index += 2;
-                    continue;
-                case '"':
-                    return new StringConstant(s.ToString());
-                default:
-                    s.Append(current);
-                    break;
-            }
-
-            index++;
-        }
-
-        throw new CompileException();
     }
 
     private Token ReadNumber()
